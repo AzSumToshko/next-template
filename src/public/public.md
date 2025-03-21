@@ -1,0 +1,1 @@
+Here add all the assets, images, etc.
