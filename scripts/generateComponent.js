@@ -16,7 +16,7 @@ rl.question('Enter component name: ', (componentName) => {
   }
 
   // Ask user whether it's a feature or shared component
-  rl.question('Choose location (feature/shared): ', (location) => {
+  rl.question('Choose location (feature/shared/layout): ', (location) => {
     if (!['feature', 'shared', 'layout'].includes(location)) {
       console.log('❌ Invalid choice. Please enter "feature" or "shared".');
       rl.close();
@@ -55,7 +55,7 @@ export default ${componentName};
 
     // Write files
     fs.writeFileSync(path.join(componentDir, `${componentName}.tsx`), componentTsx);
-    fs.writeFileSync(path.join(componentDir, `${componentName}.module.css`), componentStyles);
+    fs.writeFileSync(path.join(componentDir, `${componentName}.css`), componentStyles);
     fs.writeFileSync(path.join(componentDir, `index.ts`), componentIndex);
 
     console.log(`✅ Component ${componentName} created in components/${location}/`);
