@@ -5,14 +5,19 @@ import UserTable from '@/components/feature/UserTable';
 import SwapyDemo from '@/components/feature/SwapyDemo';
 import Calendar from '@/components/shared/Calendar';
 import { authClient } from '@/utils/auth-client';
-import { toastError, toastLoading, toastSuccess } from '@/utils/toast';
+import { toastError, toastSuccess } from '@/utils/toast';
+import CheckoutButton from '@/components/feature/CheckoutButton';
+import SubscribeButton from '@/components/feature/SubscribeButton';
 
 export default function Main() {
   const {
     data: session,
-    isPending, //loading state
-    error, //error object
-    refetch, //refetch the session
+    // eslint-disable-next-line no-unused-vars
+    isPending,
+    // eslint-disable-next-line no-unused-vars
+    error,
+    // eslint-disable-next-line no-unused-vars
+    refetch,
   } = authClient.useSession();
 
   const handleSignUp = async () => {
@@ -135,6 +140,9 @@ export default function Main() {
       >
         Sign Out
       </button>
+      {/* To use testing card, get one from here: https://docs.stripe.com/testing#cards*/}
+      <CheckoutButton />
+      <SubscribeButton />
       <div>Hello From Help page</div>
       <MyForm />
       <h1>Swapy + MUI Demo</h1>
