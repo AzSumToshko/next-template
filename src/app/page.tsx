@@ -8,7 +8,7 @@ import { authClient } from '@/auth/auth-client';
 import { toastError, toastSuccess } from '@/utils/toast';
 import CheckoutButton from '@/components/feature/CheckoutButton';
 import SubscribeButton from '@/components/feature/SubscribeButton';
-import { useCarsService } from '@/hooks/query/useCarsService';
+import { useCarsService } from '@/hooks/service/useCarsService';
 
 export default function Main() {
   const {
@@ -292,6 +292,12 @@ export default function Main() {
         onClick={callProtectedAPI}
       >
         Call Protected API
+      </button>
+      <button
+        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        onClick={sendEmail}
+      >
+        Send Email
       </button>
       {/* To use testing card, get one from here: https://docs.stripe.com/testing#cards*/}
       <CheckoutButton />

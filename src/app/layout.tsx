@@ -1,14 +1,12 @@
 'use client';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Provider } from 'react-redux';
-import { store } from '@/providers/redux/app/store';
-
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/localization/i18n';
 import { Toaster } from 'react-hot-toast';
 import { TanstackProvider } from '@/providers/tanstack-provider';
+import { ReduxProvider } from '@/providers/redux/ReduxProvider';
 
 export default function RootLayout({
   children,
@@ -20,7 +18,7 @@ export default function RootLayout({
       <body>
         <I18nextProvider i18n={i18n}>
           <TanstackProvider>
-            <Provider store={store}>{children}</Provider>
+            <ReduxProvider>{children}</ReduxProvider>
             <Toaster />
           </TanstackProvider>
         </I18nextProvider>
