@@ -8,7 +8,7 @@ import { authClient } from '@/auth/auth-client';
 import { toastError, toastSuccess } from '@/utils/toast';
 import CheckoutButton from '@/components/feature/CheckoutButton';
 import SubscribeButton from '@/components/feature/SubscribeButton';
-import { images } from 'next/dist/build/webpack/config/blocks/images';
+import { useCarsService } from '@/hooks/query/useCarsService';
 
 export default function Main() {
   const {
@@ -20,6 +20,21 @@ export default function Main() {
     // eslint-disable-next-line no-unused-vars
     refetch,
   } = authClient.useSession();
+
+  // Use the cars service hook instead of direct instantiation
+  const { useGetAllCars, useContactSupport, useGenerateInvoicePdf } = useCarsService();
+
+  // Get the query and refetch function at the component level
+  const {
+    data: carsData,
+    isLoading: carsLoading,
+    error: carsError,
+    refetch: refetchCars,
+  } = useGetAllCars();
+
+  // Use mutation hooks
+  const contactMutation = useContactSupport();
+  const pdfMutation = useGenerateInvoicePdf();
 
   const handleSignUp = async () => {
     // For more admin actions reffer to: https://better-auth.vercel.app/docs/plugins/admin
@@ -194,41 +209,44 @@ export default function Main() {
   };
 
   const callProtectedAPI = async () => {
-    await authClient.getSession({
-      fetchOptions: {
-        onSuccess: async (ctx) => {
-          const token = ctx.response.headers.get('set-auth-jwt');
+    try {
+      // Trigger a fresh data fetch
+      const { data: freshData } = await refetchCars();
 
-          console.log(token);
+      if (freshData) {
+        toastSuccess('Protected request success!');
+        console.log(freshData);
+      } else {
+        throw new Error('No data received');
+      }
+    } catch (err) {
+      toastError('Protected request failed');
+      console.error(err);
+    }
+  };
 
-          if (!token) {
-            toastError('No token found in session');
-            return;
-          }
+  const sendEmail = async () => {
+    try {
+      const emailData = {
+        name: 'a',
+        email: 'a',
+        subject: 'a',
+        message: 'a',
+      };
 
-          try {
-            const res = await fetch('http://localhost:8877/api/v1/cars', {
-              method: 'GET',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-              credentials: 'include',
-            });
+      // Use the mutation from the hook with proper handling
+      await contactMutation.mutateAsync({
+        emailData,
+        lang: 'bg',
+      });
 
-            const data = await res.json();
-
-            if (!res.ok) throw new Error(data.message || 'Request failed');
-
-            toastSuccess('Protected request success!');
-            console.log(data);
-          } catch (err) {
-            toastError('Protected request failed');
-            console.error(err);
-          }
-        },
-      },
-    });
+      // Toast is handled by the mutation's onSuccess callback
+      toastSuccess('Email sent successfully');
+    } catch (error) {
+      // Error is handled by the mutation's onError callback
+      toastError('Failed to send email');
+      console.error(error);
+    }
   };
 
   return (
